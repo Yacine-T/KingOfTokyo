@@ -7,5 +7,6 @@
     <string name="purchase">Purchase</string>
     <string name="game_state">gameState</string>
     <string name="card_in_hand">Card in hand</string>
-    <string name="help_text">King Of Tokyo HELP \n\nThis game is played against 3 IA enemies, and the goal is to win eiyher by killing all of them or by gaining 20 points. \nThis is done by rolling 6 dice every turn. These dice are tap-able, which allows you to select some to re-throw up to two times per turn. \nOnce you have thrown (and re-thrown) your dice, the enemies do the same. \nYou can tap a player at any time to view their information, and you can tap cards any time to buy them or use them. \n\n Basic game rules can be gleaned from the official King of Tokyo manual.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/menuFragment">
+    <fragment
+        android:id="@+id/menuFragment"
+        android:name="com.example.kingoftokyo.Layout.MenuFragment"
+        android:label="fragment_menu"
+        tools:layout="@layout/fragment_menu" >
+        <action
+            android:id="@+id/action_menuFragment_to_helpFragment"
+            app:destination="@id/helpFragment" />
+        <action
+            android:id="@+id/action_menuFragment_to_creditAndLicenceFragment"
+            app:destination="@id/creditsAndLicenceFragment" />
+        <action
+            android:id="@+id/action_menuFragment_to_boardGameFragment"
+            app:destination="@id/boardGameFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/shopFragment"
+        android:name="com.example.kingoftokyo.Layout.ShopFragment"
+        android:label="fragment_shop"
+        tools:layout="@layout/fragment_shop" />
+    <fragment
+        android:id="@+id/helpFragment"
+        android:name="com.example.kingoftokyo.Layout.HelpFragment"
+        android:label="fragment_help"
+        tools:layout="@layout/fragment_help" />
+    <fragment
+        android:id="@+id/creditsAndLicenceFragment"
+        android:name="com.example.kingoftokyo.Layout.CreditsAndLicenceFragment"
+        android:label="fragment_credits_and_licence"
+        tools:layout="@layout/fragment_credits_and_licence" />
+    <fragment
+        android:id="@+id/boardGameFragment"
+        android:name="com.example.kingoftokyo.Layout.BoardGameFragment"
+        android:label="fragment_board_game"
+        tools:layout="@layout/fragment_board_game" >
+        <action
+            android:id="@+id/action_boardGameFragment_to_dicesFragment"
+            app:destination="@id/dicesFragment" />
+        <action
+            android:id="@+id/action_boardGameFragment_to_cardActionFragment"
+            app:destination="@id/cardActionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/dicesFragment"
+        android:name="com.example.kingoftokyo.Layout.DicesFragment"
+        android:label="fragment_dices"
+        tools:layout="@layout/fragment_dices" >
+        <action
+            android:id="@+id/action_dicesFragment_to_shopFragment"
+            app:destination="@id/shopFragment" />
+        <action
+            android:id="@+id/action_dicesFragment_to_boardGameFragment"
+            app:destination="@id/boardGameFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/cardActionFragment"
+        android:name="com.example.kingoftokyo.Layout.CardActionFragment"
+        android:label="fragment_card_action"
+        tools:layout="@layout/fragment_card_action" />
+</navigation>
