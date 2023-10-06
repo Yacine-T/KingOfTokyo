@@ -1,5 +1,7 @@
 package com.example.kingoftokyo.Entity
 
+import com.example.kingoftokyo.R
+
 open class Player(
     val name: String,
     var energy: Int = 0,
@@ -7,7 +9,8 @@ open class Player(
     var victoryPoints: Int = 0,
     var isHuman: Boolean = true,
     var isInTokyo: Boolean = false,
-    private val cards: MutableList<Card> = mutableListOf()
+    private val cards: MutableList<Card> = mutableListOf(),
+    val imageResId: Int = R.drawable.default_image
 ) {
 
     val isAlive: Boolean
@@ -122,7 +125,7 @@ open class Player(
 
 }
 
-class IAPlayer(name: String) : Player(name, isHuman = false) {
+class IAPlayer(name: String) : Player(name, imageResId = R.drawable.ia_image, isHuman = false) {
     override fun decisionToLeaveTokyo(): Boolean {
         //
         if (health < 5) {
