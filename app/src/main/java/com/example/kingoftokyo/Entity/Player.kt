@@ -108,10 +108,10 @@ open class Player(
                 }
             }
         } else {
-            tokyo.city?.takeDamage(damage)
+            tokyo.currentPlayerInTokyo?.takeDamage(damage)
 
-            if (tokyo.city?.isAlive == false || tokyo.city?.decisionToLeaveTokyo() == true) {
-                tokyo.leaveTokyo(tokyo.city!!)
+            if (tokyo.currentPlayerInTokyo?.isAlive == false || tokyo.currentPlayerInTokyo?.decisionToLeaveTokyo() == true) {
+                tokyo.leaveTokyo(tokyo.currentPlayerInTokyo!!)
                 enterTokyo(tokyo)
             }
         }
