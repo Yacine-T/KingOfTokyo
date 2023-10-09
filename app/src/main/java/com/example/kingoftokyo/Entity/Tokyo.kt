@@ -1,27 +1,27 @@
 package com.example.kingoftokyo.Entity
 
 class Tokyo {
-    var city: Player? = null
+    var currentPlayerInTokyo: Player? = null
     val isEmpty: Boolean
-        get() = city == null
+        get() = currentPlayerInTokyo == null
 
     fun enterTokyo(player: Player) {
-        if (city == null) {
-            city = player
-            player.addVictoryPoints(1)
+        if (currentPlayerInTokyo == null) {
+            currentPlayerInTokyo = player
+            player.addVictoryPoints(1) // 1 point pour entrer dans tokyo
             println("${player.name} has entered Tokyo!")
         }
     }
 
     fun leaveTokyo(player: Player) {
-        if (city == player) {
-            city = null
+        if (currentPlayerInTokyo == player) {
+            currentPlayerInTokyo = null
             println("${player.name} has left Tokyo!")
         }
     }
 
     fun awardVictoryPointsForStayingInTokyo() {
-        city?.addVictoryPoints(2) //2 points pour commencer un tour à Tokyo.
+        currentPlayerInTokyo?.addVictoryPoints(2) //2 points pour commencer un tour à Tokyo.
     }
 }
 
