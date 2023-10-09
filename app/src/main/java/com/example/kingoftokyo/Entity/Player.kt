@@ -93,7 +93,27 @@ open class Player(
 
 class IAPlayer(name: String) : Player(name, imageResId = R.drawable.ia_image, isHuman = false) {
     override fun decisionToLeaveTokyo(): Boolean {
-        // Leave Tokyo if health is below 5 or if AI has more than 15 victory points to protect its lead
-        return health < 5 || victoryPoints > 15
+        if (health < 3) return true
+        if (victoryPoints > 15 && health < 6) return true
+        // Adding a small randomness 10%
+        return (0..9).random() == 0
     }
+
+    fun decideCardToBuy(market: Market): Card? {
+        val affordableCards = market.availableCards.filter { it.energyCost <= this.energy }
+        if (affordableCards.isEmpty()) return null
+
+        if (this.health < 5) {
+            val healthBoostingCard = affordableCards.find { card -> card.name.toLowerCase().contains("heal") }
+            if (healthBoostingCard != null) return healthBoostingCard
+        }
+
+        if (this.victoryPoints > 15) {
+            val victoryBoostingCard = affordableCards.find { card -> card.name.toLowerCase().contains("victory") }
+            if (victoryBoostingCard != null) return victoryBoostingCard
+        }
+
+        return affordableCards.random()
+    }
+
 }
