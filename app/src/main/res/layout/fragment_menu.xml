@@ -2,10 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/menu"
+    android:id="@+id/menu_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Layout.MenuFragment">
+
 
     <Button
         android:id="@+id/playButton"
@@ -15,7 +16,7 @@
         android:layout_marginTop="360dp"
         android:layout_marginEnd="130dp"
         android:layout_marginBottom="1dp"
-        android:text="Play"
+        android:text="@string/play"
         app:layout_constraintBottom_toTopOf="@+id/helpButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,7 +30,7 @@
         android:layout_marginTop="1dp"
         android:layout_marginEnd="130dp"
         android:layout_marginBottom="1dp"
-        android:text="Help"
+        android:text="@string/help"
         app:layout_constraintBottom_toTopOf="@+id/creditAndLicenceButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,8 +43,9 @@
         android:layout_marginStart="129dp"
         android:layout_marginTop="1dp"
         android:layout_marginEnd="130dp"
-        android:text="Credit and Licence"
+        android:text="@string/credit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/helpButton" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
