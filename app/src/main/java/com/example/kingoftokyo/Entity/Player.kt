@@ -139,5 +139,10 @@ class IAPlayer(name: String) : Player(name, imageResId = R.drawable.ia_image, is
         return diceResults.filter { it == maxCount }
     }
 
+    fun shouldRollAgain(diceResults: List<DiceFace>): Boolean {
+        val counts = diceResults.groupingBy { it }.eachCount()
+        return counts.values.none { it >= 3 }
+    }
+
 
 }

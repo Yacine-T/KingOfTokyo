@@ -67,6 +67,7 @@ class BoardGameFragment : Fragment() {
         val playerInTokyoAvatar: ImageView = view.findViewById(R.id.player_in_tokyo_avatar)
 
 
+        //Observe changes in the UI
         viewModel.uiEvent.observe(viewLifecycleOwner) { event ->
             when (event) {
                 is UIEvent.ShowDialog -> {
@@ -153,23 +154,23 @@ class BoardGameFragment : Fragment() {
             .setNegativeButton("No", null)
             .show()
     }
-    private fun showDialog(title: String, message: String) {
+    private fun displayNextDialog() {
+        if (dialogQueue.isNotEmpty()) {
+            val event = dialogQueue.peek()
+            showDialog(event.title, event.message, event.onDismiss)
+        }
+    }
+
+    private fun showDialog(title: String, message: String, onDismiss: (() -> Unit)? = null) {
         AlertDialog.Builder(requireContext())
             .setTitle(title)
             .setMessage(message)
             .setPositiveButton("OK") { _, _ ->
                 dialogQueue.poll()
                 displayNextDialog()
+                onDismiss?.invoke()
             }
             .show()
     }
 
-    private fun displayNextDialog() {
-        if (dialogQueue.isNotEmpty()) {
-            val event = dialogQueue.peek()
-            showDialog(event.title, event.message)
-        }
-    }
-
 }
-

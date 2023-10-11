@@ -32,7 +32,15 @@ class GameViewModel : ViewModel() {
 
     fun startGame() {
         players.shuffle()
-        nextTurn()
+        val firstPlayer = players[0]
+        gameState.value = gameState.value?.copy(currentTurnPlayer = firstPlayer)
+
+        // Reset roll count for the first player's turn.
+        currentRollCount = 0
+
+        if (firstPlayer is IAPlayer) {
+            handleIATurn(firstPlayer)
+        }
     }
 
     fun playerLeavesTokyo(player: Player) {
@@ -47,6 +55,7 @@ class GameViewModel : ViewModel() {
     fun rollDiceForPlayer(player: Player, diceToKeep: List<DiceFace>? = null) {
         if (currentRollCount >= maxRolls) {
             // maximum rolls reached.
+            nextTurn()
             return
         }
 
@@ -73,8 +82,9 @@ class GameViewModel : ViewModel() {
         if (player is IAPlayer && currentRollCount < maxRolls) {
             val diceDecision = player.decideDiceToKeep(finalRolls)
             rollDiceForPlayer(player, diceDecision)
+        } else if (currentRollCount >= maxRolls || (player is IAPlayer && !player.shouldRollAgain(currentDiceResults.value ?: emptyList()))) {
+            nextTurn()
         }
-
     }
 
 
@@ -116,22 +126,26 @@ class GameViewModel : ViewModel() {
         uiEvent.postValue(UIEvent.ShowDialog("Tour de ${iaPlayer.name}", "C'est le tour de ${iaPlayer.name}."))
 
         Handler(Looper.getMainLooper()).postDelayed({
+            // Lancer les dés pour l'IA
             rollDiceForPlayer(iaPlayer)
             uiEvent.postValue(UIEvent.ShowDialog("Lancer de dés", "${iaPlayer.name} a lancé les dés et a obtenu ${currentDiceResults.value?.joinToString(", ")}."))
 
             Handler(Looper.getMainLooper()).postDelayed({
-                val diceDecision = iaPlayer.decideDiceToKeep(currentDiceResults.value ?: emptyList())
-                if (diceDecision.isNotEmpty() && currentRollCount < maxRolls) {
+                // Décider si l'IA veut relancer les dés
+                if (iaPlayer.shouldRollAgain(currentDiceResults.value ?: emptyList()) && currentRollCount < maxRolls) {
+                    val diceDecision = iaPlayer.decideDiceToKeep(currentDiceResults.value ?: emptyList())
                     uiEvent.postValue(UIEvent.ShowDialog("Décision de l'IA", "${iaPlayer.name} a décidé de garder les dés: ${diceDecision.joinToString(", ")}"))
 
                     Handler(Looper.getMainLooper()).postDelayed({
                         rollDiceForPlayer(iaPlayer, diceDecision)
 
                         Handler(Looper.getMainLooper()).postDelayed({
+                            // 3. Conclure le tour de l'IA après les lancers
                             concludeIATurn(iaPlayer)
                         }, 1000)
                     }, 1000)
                 } else {
+                    // Si l'IA ne veut pas relancer, conclure son tour
                     concludeIATurn(iaPlayer)
                 }
             }, 1000)
@@ -139,17 +153,25 @@ class GameViewModel : ViewModel() {
     }
 
     private fun concludeIATurn(iaPlayer: IAPlayer) {
+        // Décider si l'IA veut quitter Tokyo après avoir été attaquée
         if (iaPlayer.hasBeenAttacked && iaPlayer.decisionToLeaveTokyo()) {
             playerLeavesTokyo(iaPlayer)
             uiEvent.postValue(UIEvent.ShowDialog("Tokyo", "${iaPlayer.name} a décidé de quitter Tokyo."))
 
             Handler(Looper.getMainLooper()).postDelayed({
+                // Décider si l'IA veut acheter une carte
                 decideCardPurchaseForIA(iaPlayer)
             }, 1000)
         } else if (iaPlayer.isInTokyo) {
             uiEvent.postValue(UIEvent.ShowDialog("Tokyo", "${iaPlayer.name} est actuellement à Tokyo."))
-            nextTurn()
+            Handler(Looper.getMainLooper()).postDelayed({
+                nextTurn()
+            }, 1000)
         } else {
+            if (tokyo.isEmpty) {
+                iaPlayer.enterTokyo(tokyo)
+                uiEvent.postValue(UIEvent.ShowDialog("Tokyo", "${iaPlayer.name} est entré à Tokyo."))
+            }
             decideCardPurchaseForIA(iaPlayer)
         }
     }
@@ -174,11 +196,15 @@ class GameViewModel : ViewModel() {
         if (winner != null) {
             endGame(winner)
         } else {
-            gameState.value = gameState.value?.copy(currentTurnPlayer = nextPlayer(gameState.value?.currentTurnPlayer))
-            val currentPlayer = gameState.value?.currentTurnPlayer
-            if (currentPlayer is IAPlayer) {
-                handleIATurn(currentPlayer)
-            }
+            val nextPlayer = nextPlayer(gameState.value?.currentTurnPlayer)
+            gameState.value = gameState.value?.copy(currentTurnPlayer = nextPlayer)
+
+            uiEvent.postValue(UIEvent.ShowDialog("Changement de tour", "C'est le tour de ${nextPlayer.name}.", onDismiss = {
+
+                if (nextPlayer is IAPlayer) {
+                    handleIATurn(nextPlayer)
+                }
+            }))
         }
 
         // Reset roll count for the next player's turn.
