@@ -30,7 +30,7 @@
         app:cornerRadius="40dp"
         app:layout_constraintBottom_toTopOf="@+id/energie_point_available_text"
         app:layout_constraintEnd_toStartOf="@+id/second_skip_btn"
-        app:layout_constraintStart_toEndOf="@+id/first_skip_btn"
+        app:layout_constraintStart_toEndOf="@+id/second_skip_btn2"
         app:layout_constraintTop_toBottomOf="@+id/card_from_shop" />
 
     <TextView
@@ -46,34 +46,30 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/first_skip_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:background="#00FFFFFF"
-        android:text="<"
-        android:textColor="#000000"
-        android:textSize="48sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/card_from_shop"
-        app:layout_constraintVertical_bias="0.081" />
-
-    <Button
         android:id="@+id/second_skip_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="12dp"
         android:background="#00FFFFFF"
-        android:text=">"
-        android:textColor="#000000"
-        android:textSize="48sp"
-        android:textStyle="bold"
+        android:drawableLeft="@drawable/ic_right_arrow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/card_from_shop"
         app:layout_constraintVertical_bias="0.081" />
+
+    <Button
+        android:id="@+id/second_skip_btn2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="8dp"
+        android:background="#00FFFFFF"
+        android:drawableLeft="@drawable/ic_left_arrow"
+        android:textColor="#000000"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card_from_shop" />
 
     <TextView
         android:id="@+id/energie_point_of_card"
