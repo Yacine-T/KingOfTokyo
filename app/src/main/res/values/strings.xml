@@ -20,4 +20,7 @@
 
     <!-- Point de victoire -->
     <string name="zero">0</string>
+
+    <string name="hello_blank_fragment">Texte de votre fragment</string>
+
 </resources>
