@@ -1,5 +1,7 @@
 package com.example.kingoftokyo.ViewModel
 
+import android.os.Handler
+import android.os.Looper
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kingoftokyo.Entity.*
@@ -17,6 +19,7 @@ class GameViewModel : ViewModel() {
     val players: MutableList<Player> = mutableListOf(human, ai1, ai2, ai3)
 
     val gameState = MutableLiveData<GameState>()
+    val uiEvent = MutableLiveData<UIEvent>()
 
     val currentDiceResults = MutableLiveData<List<DiceFace>>(emptyList())
 
@@ -27,7 +30,15 @@ class GameViewModel : ViewModel() {
         gameState.value = GameState(players, market.availableCards)
     }
 
+    fun startGame() {
+        players.shuffle()
+        nextTurn()
+    }
 
+    fun playerLeavesTokyo(player: Player) {
+        tokyo.leaveTokyo(player)
+        refreshGameState()
+    }
 
     private fun List<DiceFace>.toDiceFaceCount(): Map<DiceFace, Int> {
         return this.groupingBy { it }.eachCount()
@@ -57,8 +68,20 @@ class GameViewModel : ViewModel() {
         currentRollCount++
         currentDiceResults.value = finalRolls
         refreshGameState()
+
+        // Si c'est un IAPlayer, prenons des décisions pour lui
+        if (player is IAPlayer && currentRollCount < maxRolls) {
+            val diceDecision = player.decideDiceToKeep(finalRolls)
+            rollDiceForPlayer(player, diceDecision)
+        }
+
     }
 
+
+    fun rollDiceForCurrentPlayer() {
+        val currentPlayer = gameState.value?.currentTurnPlayer ?: return
+        rollDiceForPlayer(currentPlayer)
+    }
 
 
     fun purchaseCardForPlayer(player: Player, card: Card) {
@@ -89,6 +112,61 @@ class GameViewModel : ViewModel() {
         return playersWith20Points.maxByOrNull { it.victoryPoints }
     }
 
+    fun handleIATurn(iaPlayer: IAPlayer) {
+        uiEvent.postValue(UIEvent.ShowDialog("Tour de ${iaPlayer.name}", "C'est le tour de ${iaPlayer.name}."))
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            rollDiceForPlayer(iaPlayer)
+            uiEvent.postValue(UIEvent.ShowDialog("Lancer de dés", "${iaPlayer.name} a lancé les dés et a obtenu ${currentDiceResults.value?.joinToString(", ")}."))
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                val diceDecision = iaPlayer.decideDiceToKeep(currentDiceResults.value ?: emptyList())
+                if (diceDecision.isNotEmpty() && currentRollCount < maxRolls) {
+                    uiEvent.postValue(UIEvent.ShowDialog("Décision de l'IA", "${iaPlayer.name} a décidé de garder les dés: ${diceDecision.joinToString(", ")}"))
+
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        rollDiceForPlayer(iaPlayer, diceDecision)
+
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            concludeIATurn(iaPlayer)
+                        }, 1000)
+                    }, 1000)
+                } else {
+                    concludeIATurn(iaPlayer)
+                }
+            }, 1000)
+        }, 1000)
+    }
+
+    private fun concludeIATurn(iaPlayer: IAPlayer) {
+        if (iaPlayer.hasBeenAttacked && iaPlayer.decisionToLeaveTokyo()) {
+            playerLeavesTokyo(iaPlayer)
+            uiEvent.postValue(UIEvent.ShowDialog("Tokyo", "${iaPlayer.name} a décidé de quitter Tokyo."))
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                decideCardPurchaseForIA(iaPlayer)
+            }, 1000)
+        } else if (iaPlayer.isInTokyo) {
+            uiEvent.postValue(UIEvent.ShowDialog("Tokyo", "${iaPlayer.name} est actuellement à Tokyo."))
+            nextTurn()
+        } else {
+            decideCardPurchaseForIA(iaPlayer)
+        }
+    }
+
+    private fun decideCardPurchaseForIA(iaPlayer: IAPlayer) {
+        val cardToBuy = iaPlayer.decideCardToBuy(market)
+        if (cardToBuy != null) {
+            purchaseCardForPlayer(iaPlayer, cardToBuy)
+            uiEvent.postValue(UIEvent.ShowDialog("Achat de carte", "${iaPlayer.name} a décidé d'acheter la carte ${cardToBuy.name}."))
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                nextTurn()
+            }, 1000)
+        } else {
+            nextTurn()
+        }
+    }
     fun nextTurn() {
         tokyo.awardVictoryPointsForStayingInTokyo()
 
@@ -97,11 +175,17 @@ class GameViewModel : ViewModel() {
             endGame(winner)
         } else {
             gameState.value = gameState.value?.copy(currentTurnPlayer = nextPlayer(gameState.value?.currentTurnPlayer))
+            val currentPlayer = gameState.value?.currentTurnPlayer
+            if (currentPlayer is IAPlayer) {
+                handleIATurn(currentPlayer)
+            }
         }
 
         // Reset roll count for the next player's turn.
         currentRollCount = 0
     }
+
+
 
     fun endGame(winner: Player) {
         // Update the game state to reflect the winner.
