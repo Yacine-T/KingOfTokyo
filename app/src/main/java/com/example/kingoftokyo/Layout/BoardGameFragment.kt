@@ -5,51 +5,59 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.fragment.app.viewModels
 import com.example.kingoftokyo.R
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import com.example.kingoftokyo.ViewModel.GameViewModel
 
 class BoardGameFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
+    private val viewModel: GameViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_board_game, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment BoardGameFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            BoardGameFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState);
+        viewModel.gameState.observe(viewLifecycleOwner) { gameState ->
+            for (i in 1..4) {
+                val pseudo = view.findViewById<TextView>(
+                    resources.getIdentifier(
+                        "player_" + i + "_pseudo",
+                        "id",
+                        requireContext().packageName
+                    )
+                )
+                val energy = view.findViewById<TextView>(
+                    resources.getIdentifier(
+                        "player_" + i + "_energy",
+                        "id",
+                        requireContext().packageName
+                    )
+                );
+                val life = view.findViewById<TextView>(
+                    resources.getIdentifier(
+                        "player_" + i + "_life",
+                        "id",
+                        requireContext().packageName
+                    )
+                );
+
+                pseudo.text = viewModel.players[i - 1].name;
+                energy.text = viewModel.players[i - 1].energy.toString();
+                life.text = viewModel.players[i - 1].health.toString();
             }
+            val playerInTokyo = gameState.players.find { it.isInTokyo }
+            if(playerInTokyo !== null) {
+                val playerInTokyoName = view.findViewById<TextView>(R.id.player_in_tokyo_name);
+                val playerInTokyoAvatar = view.findViewById<ImageView>(R.id.player_in_tokyo_avatar);
+                playerInTokyoName.text = playerInTokyo.name;
+            }
+        }
     }
+
 }

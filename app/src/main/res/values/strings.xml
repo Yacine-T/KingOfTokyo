@@ -20,6 +20,7 @@
 
     <!-- Point de victoire -->
     <string name="zero">0</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="hello_blank_fragment">Texte de votre fragment</string>
+
 </resources>

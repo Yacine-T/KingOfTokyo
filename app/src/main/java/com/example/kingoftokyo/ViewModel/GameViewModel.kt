@@ -18,6 +18,8 @@ class GameViewModel : ViewModel() {
 
     val gameState = MutableLiveData<GameState>()
 
+    val currentDiceResults = MutableLiveData<List<DiceFace>>(emptyList())
+
     private var currentRollCount = 0
     private val maxRolls = 3
 
@@ -25,28 +27,38 @@ class GameViewModel : ViewModel() {
         gameState.value = GameState(players, market.availableCards)
     }
 
-    fun rollDiceForPlayer(player: Player) {
+
+
+    private fun List<DiceFace>.toDiceFaceCount(): Map<DiceFace, Int> {
+        return this.groupingBy { it }.eachCount()
+    }
+
+    fun rollDiceForPlayer(player: Player, diceToKeep: List<DiceFace>? = null) {
         if (currentRollCount >= maxRolls) {
             // maximum rolls reached.
             return
         }
 
         val dice = Dice()
-        val results = List(6) { dice.roll() }
-        val interpretedResults = DiceUtils.interpretDiceResults(results)
+        val newDiceCount = 6 - (diceToKeep?.size ?: 0)
+        val newRolls = List(newDiceCount) { dice.roll() }
+        val finalRolls = diceToKeep?.plus(newRolls) ?: newRolls
+        val diceFaceCounts = finalRolls.toDiceFaceCount()
 
-        player.energy += DiceUtils.calculateEnergyFromDice(interpretedResults)
-        player.heal(DiceUtils.calculateHeartsFromDice(interpretedResults, player.isInTokyo))
-        player.addVictoryPoints(DiceUtils.calculateVictoryPointsFromDice(interpretedResults))
+        player.energy += DiceUtils.calculateEnergyFromDice(diceFaceCounts)
+        player.heal(DiceUtils.calculateHeartsFromDice(diceFaceCounts, player.isInTokyo))
+        player.addVictoryPoints(DiceUtils.calculateVictoryPointsFromDice(diceFaceCounts))
 
-        val damage = DiceUtils.calculatePawsFromDice(interpretedResults)
+        val damage = DiceUtils.calculatePawsFromDice(diceFaceCounts)
         if (damage > 0) {
             player.attack(players - player, damage, tokyo)
         }
 
-        refreshGameState()
         currentRollCount++
+        currentDiceResults.value = finalRolls
+        refreshGameState()
     }
+
 
 
     fun purchaseCardForPlayer(player: Player, card: Card) {
@@ -82,13 +94,18 @@ class GameViewModel : ViewModel() {
 
         val winner = checkForWinner()
         if (winner != null) {
-            gameState.value = gameState.value?.copy(winner = winner)
+            endGame(winner)
         } else {
             gameState.value = gameState.value?.copy(currentTurnPlayer = nextPlayer(gameState.value?.currentTurnPlayer))
         }
 
         // Reset roll count for the next player's turn.
         currentRollCount = 0
+    }
+
+    fun endGame(winner: Player) {
+        // Update the game state to reflect the winner.
+        gameState.value = gameState.value?.copy(winner = winner)
     }
 
     private fun nextPlayer(currentPlayer: Player?): Player {
