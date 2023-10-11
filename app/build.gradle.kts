@@ -46,4 +46,14 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.3")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.3")
+
+
+    val lifecycle_version = "2.6.2"
+    val fragment_version = "1.6.1"
+    // add dependency on lifecyle aware components
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
+    // add specific dependency to use viewmodel in fragments
+    implementation("androidx.fragment:fragment-ktx:$fragment_version")
+    // add livedata dependency
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version")
 }

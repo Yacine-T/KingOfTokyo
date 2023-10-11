@@ -94,13 +94,18 @@ class GameViewModel : ViewModel() {
 
         val winner = checkForWinner()
         if (winner != null) {
-            gameState.value = gameState.value?.copy(winner = winner)
+            endGame(winner)
         } else {
             gameState.value = gameState.value?.copy(currentTurnPlayer = nextPlayer(gameState.value?.currentTurnPlayer))
         }
 
         // Reset roll count for the next player's turn.
         currentRollCount = 0
+    }
+
+    fun endGame(winner: Player) {
+        // Update the game state to reflect the winner.
+        gameState.value = gameState.value?.copy(winner = winner)
     }
 
     private fun nextPlayer(currentPlayer: Player?): Player {
