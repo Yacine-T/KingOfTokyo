@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/KingOfTokyo.iml" filepath="$PROJECT_DIR$/.idea/modules/KingOfTokyo.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/KingOfTokyo.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/KingOfTokyo.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/KingOfTokyo.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/KingOfTokyo.app.androidTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/KingOfTokyo.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/KingOfTokyo.app.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/KingOfTokyo.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/KingOfTokyo.app.unitTest.iml" />
     </modules>
