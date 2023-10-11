@@ -6,16 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import com.example.kingoftokyo.Entity.Player
+import androidx.fragment.app.viewModels
 import com.example.kingoftokyo.R
-import com.example.kingoftokyo.ViewModel.GameState
 import com.example.kingoftokyo.ViewModel.GameViewModel
 
 
 class BoardGameFragment : Fragment() {
-    private lateinit var viewModel: GameViewModel
+
+    private val viewModel: GameViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,47 +25,53 @@ class BoardGameFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
+        val player1Pseudo: TextView = view.findViewById(R.id.player_1_pseudo)
+        val player1Life: TextView = view.findViewById(R.id.player_1_life)
+        val player1Energy: TextView = view.findViewById(R.id.player_1_energy)
 
-        viewModel.gameState.observe(viewLifecycleOwner, { gameState ->
-            updateUI(gameState)
-        })
+        val player2Pseudo: TextView = view.findViewById(R.id.player_2_pseudo)
+        val player2Life: TextView = view.findViewById(R.id.player_2_life)
+        val player2Energy: TextView = view.findViewById(R.id.player_2_energy)
 
-        // Observe dice results
-//        viewModel.currentDiceResults.observe(viewLifecycleOwner, Observer { diceResults ->
-//            updateDiceResults(diceResults)
-//        })
+        val player3Pseudo: TextView = view.findViewById(R.id.player_3_pseudo)
+        val player3Life: TextView = view.findViewById(R.id.player_3_life)
+        val player3Energy: TextView = view.findViewById(R.id.player_3_energy)
 
-    }
+        val player4Pseudo: TextView = view.findViewById(R.id.player_4_pseudo)
+        val player4Life: TextView = view.findViewById(R.id.player_4_life)
+        val player4Energy: TextView = view.findViewById(R.id.player_4_energy)
 
-    private fun updateUI(gameState: GameState) {
-        // Update player info
-        updatePlayerInfo(player_1_pseudo, player_1_life, player_1_energy, gameState.players[0])
-        updatePlayerInfo(player_2_pseudo, player_2_life, player_2_energy, gameState.players[1])
-        updatePlayerInfo(player_3_pseudo, player_3_life, player_3_energy, gameState.players[2])
-        updatePlayerInfo(player_4_pseudo, player_4_life, player_4_energy, gameState.players[3])
+        // Observe changes in the game state
+        viewModel.gameState.observe(viewLifecycleOwner) { gameState ->
 
-        // Update player in Tokyo
-        val playerInTokyo = gameState.players.find { it.isInTokyo }
-        if (playerInTokyo != null) {
-            player_in_tokyo_name.text = playerInTokyo.name
-            player_in_tokyo_avatar.setImageResource(playerInTokyo.imageResId)
-        } else {
-            player_in_tokyo_name.text = "No one in Tokyo"
-            player_in_tokyo_avatar.setImageResource(R.drawable.default_image)
+            val players = gameState.players
+            if (players.isNotEmpty()) {
+                player1Pseudo.text = players[0].name
+                player1Life.text = players[0].health.toString()
+                player1Energy.text = players[0].energy.toString()
+
+                player2Pseudo.text = players[1].name
+                player2Life.text = players[1].health.toString()
+                player2Energy.text = players[1].energy.toString()
+
+                player3Pseudo.text = players[2].name
+                player3Life.text = players[2].health.toString()
+                player3Energy.text = players[2].energy.toString()
+
+                player4Pseudo.text = players[3].name
+                player4Life.text = players[3].health.toString()
+                player4Energy.text = players[3].energy.toString()
+
+            }
+
+            // Check if there's a player in Tokyo and update the UI
+            val playerInTokyo = players.find { it.isInTokyo }
+            if (playerInTokyo != null) {
+                val playerInTokyoName: TextView = view.findViewById(R.id.player_in_tokyo_name)
+                playerInTokyoName.text = playerInTokyo.name
+
+            }
         }
 
-        // Check for game winner
-        gameState.winner?.let { winner ->
-            println("Youpi t'as gagner")
-        }
     }
-
-    private fun updatePlayerInfo(pseudoTextView: TextView, lifeTextView: TextView, energyTextView: TextView, player: Player) {
-        pseudoTextView.text = player.name
-        lifeTextView.text = "${player.health} HP"
-        energyTextView.text = "${player.energy} Energy"
-    }
-
-
 }
