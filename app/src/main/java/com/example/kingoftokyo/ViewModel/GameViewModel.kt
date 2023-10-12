@@ -4,7 +4,15 @@ import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.kingoftokyo.Entity.*
+import com.example.kingoftokyo.Entity.Card
+import com.example.kingoftokyo.Entity.Dice
+import com.example.kingoftokyo.Entity.DiceFace
+import com.example.kingoftokyo.Entity.DiceUtils
+import com.example.kingoftokyo.Entity.IAPlayer
+import com.example.kingoftokyo.Entity.Market
+import com.example.kingoftokyo.Entity.Player
+import com.example.kingoftokyo.Entity.Tokyo
+import com.example.kingoftokyo.Entity.UIEvent
 
 class GameViewModel : ViewModel() {
     private val tokyo = Tokyo()
@@ -31,7 +39,7 @@ class GameViewModel : ViewModel() {
     }
 
     fun startGame() {
-        players.shuffle()
+//        players.shuffle()
         val firstPlayer = players[0]
         gameState.value = gameState.value?.copy(currentTurnPlayer = firstPlayer)
 
@@ -88,11 +96,10 @@ class GameViewModel : ViewModel() {
     }
 
 
-    fun rollDiceForCurrentPlayer() {
+    fun rollDiceForCurrentPlayer(diceToKeep: List<DiceFace>? = null) {
         val currentPlayer = gameState.value?.currentTurnPlayer ?: return
-        rollDiceForPlayer(currentPlayer)
+        rollDiceForPlayer(currentPlayer, diceToKeep)
     }
-
 
     fun purchaseCardForPlayer(player: Player, card: Card) {
         if (player.energy < card.energyCost) {

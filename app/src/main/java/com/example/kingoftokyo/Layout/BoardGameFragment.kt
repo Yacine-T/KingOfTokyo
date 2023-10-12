@@ -3,7 +3,6 @@ package com.example.kingoftokyo.Layout
 import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,9 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.example.kingoftokyo.Entity.IAPlayer
 import com.example.kingoftokyo.Entity.Player
 import com.example.kingoftokyo.Entity.UIEvent
@@ -45,7 +46,9 @@ class BoardGameFragment : Fragment() {
         rollDiceButton.visibility = View.GONE
 
         rollDiceButton.setOnClickListener {
-            viewModel.rollDiceForCurrentPlayer()
+//            viewModel.rollDiceForCurrentPlayer()
+            findNavController().navigate(R.id.action_boardGameFragment_to_dicesFragment)
+
         }
 
         val player1Pseudo: TextView = view.findViewById(R.id.player_1_pseudo)
