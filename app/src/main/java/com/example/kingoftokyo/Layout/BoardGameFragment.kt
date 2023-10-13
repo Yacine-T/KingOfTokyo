@@ -93,20 +93,20 @@ class BoardGameFragment : Fragment() {
             val players = gameState.players
             if (players.isNotEmpty()) {
                 player1Pseudo.text = players[0].name
-                player1Life.text = players[0].health.toString()
-                player1Energy.text = players[0].energy.toString()
+                player1Life.text = players[0].health.toString() + " ❤️"
+                player1Energy.text = players[0].energy.toString() + " ⚡"
 
                 player2Pseudo.text = players[1].name
-                player2Life.text = players[1].health.toString()
-                player2Energy.text = players[1].energy.toString()
+                player2Life.text = players[1].health.toString() + " ❤️"
+                player2Energy.text = players[1].energy.toString() + " ⚡"
 
                 player3Pseudo.text = players[2].name
-                player3Life.text = players[2].health.toString()
-                player3Energy.text = players[2].energy.toString()
+                player3Life.text = players[2].health.toString() + " ❤️"
+                player3Energy.text = players[2].energy.toString() + " ⚡"
 
                 player4Pseudo.text = players[3].name
-                player4Life.text = players[3].health.toString()
-                player4Energy.text = players[3].energy.toString()
+                player4Life.text = players[3].health.toString() + " ❤️"
+                player4Energy.text = players[3].energy.toString() + " ⚡"
 
                 // Highlight the current player
                 val currentPlayer = gameState.currentTurnPlayer
@@ -115,11 +115,11 @@ class BoardGameFragment : Fragment() {
                 } else {
                     rollDiceButton.visibility = View.GONE
                 }
-
-                player1Pseudo.setBackgroundColor(if (currentPlayer == players[0]) Color.YELLOW else Color.TRANSPARENT)
-                player2Pseudo.setBackgroundColor(if (currentPlayer == players[1]) Color.YELLOW else Color.TRANSPARENT)
-                player3Pseudo.setBackgroundColor(if (currentPlayer == players[2]) Color.YELLOW else Color.TRANSPARENT)
-                player4Pseudo.setBackgroundColor(if (currentPlayer == players[3]) Color.YELLOW else Color.TRANSPARENT)
+                val secondaryColor = resources.getColor(R.color.secondary)
+                player1Pseudo.setBackgroundColor(if (currentPlayer == players[0]) secondaryColor else Color.TRANSPARENT)
+                player2Pseudo.setBackgroundColor(if (currentPlayer == players[1]) secondaryColor else Color.TRANSPARENT)
+                player3Pseudo.setBackgroundColor(if (currentPlayer == players[2]) secondaryColor else Color.TRANSPARENT)
+                player4Pseudo.setBackgroundColor(if (currentPlayer == players[3]) secondaryColor else Color.TRANSPARENT)
 
             }
 

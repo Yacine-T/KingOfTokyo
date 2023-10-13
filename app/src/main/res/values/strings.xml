@@ -22,5 +22,6 @@
     <string name="zero">0</string>
 
     <string name="hello_blank_fragment">Texte de votre fragment</string>
+    <string name="dicesTitle">Choose your dices</string>
 
 </resources>
