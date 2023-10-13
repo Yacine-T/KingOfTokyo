@@ -2,6 +2,7 @@ package com.example.kingoftokyo.ViewModel
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kingoftokyo.Entity.Card
@@ -39,9 +40,19 @@ class GameViewModel : ViewModel() {
     }
 
     fun startGame() {
-//        players.shuffle()
+        players.shuffle()
         val firstPlayer = players[0]
         gameState.value = gameState.value?.copy(currentTurnPlayer = firstPlayer)
+        uiEvent.postValue(UIEvent.ShowDialog("Game Start", "The game has started! First player: ${firstPlayer.name}."))
+
+        Log.d("GameViewModel", "Starting game with first player: ${firstPlayer.name}")
+
+        // Check if the current player is null
+        if (gameState.value?.currentTurnPlayer == null) {
+            Log.e("GameViewModel", "Current player is null after setting!")
+        } else {
+            Log.d("GameViewModel", "Current player is: ${gameState.value?.currentTurnPlayer?.name}")
+        }
 
         // Reset roll count for the first player's turn.
         currentRollCount = 0
@@ -61,6 +72,8 @@ class GameViewModel : ViewModel() {
     }
 
     fun rollDiceForPlayer(player: Player, diceToKeep: List<DiceFace>? = null) {
+        Log.d("GameViewModel", "Rolling dice for ${player.name}. Current roll count: $currentRollCount")
+
         if (currentRollCount >= maxRolls) {
             // maximum rolls reached.
             nextTurn()
@@ -76,6 +89,7 @@ class GameViewModel : ViewModel() {
         player.energy += DiceUtils.calculateEnergyFromDice(diceFaceCounts)
         player.heal(DiceUtils.calculateHeartsFromDice(diceFaceCounts, player.isInTokyo))
         player.addVictoryPoints(DiceUtils.calculateVictoryPointsFromDice(diceFaceCounts))
+        Log.d("GameViewModel", "${player.name} has ${player.energy} energy, ${player.victoryPoints} victory points, and ${player.health} health after dice roll.")
 
         val damage = DiceUtils.calculatePawsFromDice(diceFaceCounts)
         if (damage > 0) {
@@ -97,11 +111,16 @@ class GameViewModel : ViewModel() {
 
 
     fun rollDiceForCurrentPlayer(diceToKeep: List<DiceFace>? = null) {
+        // Log at the start of the dice roll
+        Log.d("GameViewModel", "Rolling dice with selected dice: $diceToKeep")
+
         val currentPlayer = gameState.value?.currentTurnPlayer ?: return
         rollDiceForPlayer(currentPlayer, diceToKeep)
     }
 
     fun purchaseCardForPlayer(player: Player, card: Card) {
+        Log.d("GameViewModel", "${player.name} is attempting to purchase card: ${card.name}")
+
         if (player.energy < card.energyCost) {
             //  Error- insufficient energy.
             return
@@ -112,6 +131,8 @@ class GameViewModel : ViewModel() {
             player.addCard(card)
             refreshGameState()
         }
+        Log.d("GameViewModel", "${player.name} successfully purchased card: ${card.name}. Remaining energy: ${player.energy}")
+
     }
 
     private fun refreshGameState() {
@@ -130,6 +151,8 @@ class GameViewModel : ViewModel() {
     }
 
     fun handleIATurn(iaPlayer: IAPlayer) {
+        Log.d("GameViewModel", "Handling turn for AI: ${iaPlayer.name}")
+
         uiEvent.postValue(UIEvent.ShowDialog("Tour de ${iaPlayer.name}", "C'est le tour de ${iaPlayer.name}."))
 
         Handler(Looper.getMainLooper()).postDelayed({
@@ -197,6 +220,15 @@ class GameViewModel : ViewModel() {
         }
     }
     fun nextTurn() {
+        // Check if the game has already ended
+        if (gameState.value?.winner != null) {
+            Log.d("GameViewModel", "Game has already ended. Not moving to the next turn.")
+            uiEvent.postValue(UIEvent.ShowDialog("Game Over", "The game has already ended! Winner: ${gameState.value?.winner?.name}"))
+            return
+        }
+
+        Log.d("GameViewModel", "Moving to the next turn. Current player: ${gameState.value?.currentTurnPlayer?.name}")
+
         tokyo.awardVictoryPointsForStayingInTokyo()
 
         val winner = checkForWinner()
@@ -221,6 +253,8 @@ class GameViewModel : ViewModel() {
 
 
     fun endGame(winner: Player) {
+        Log.d("GameViewModel", "Game ended. Winner: ${winner.name}")
+
         // Update the game state to reflect the winner.
         gameState.value = gameState.value?.copy(winner = winner)
     }
@@ -243,22 +277,24 @@ class GameViewModel : ViewModel() {
         val damage = DiceUtils.calculatePawsFromDice(DiceUtils.interpretDiceResults(diceResults))
         val eliminatedPlayers = attacker.attack(opponents, damage, tokyo)
 
+        val attackSummary = StringBuilder("${attacker.name} dealt $damage damage!\n")
+
         // Award for eliminating players
         if (eliminatedPlayers.isNotEmpty()) {
             attacker.addVictoryPoints(2 * eliminatedPlayers.size)
-            println("${attacker.name} earned ${2 * eliminatedPlayers.size} victory points for eliminating players!")
+            attackSummary.append("${attacker.name} earned ${2 * eliminatedPlayers.size} victory points for eliminating players!\n")
         }
 
-        // Notify players about the attack
-        println("${attacker.name} dealt $damage damage!")
+        // Notify players about the attack and their health status
         for (player in opponents) {
             if (!player.isAlive) {
-                println("${player.name} has been eliminated!")
+                attackSummary.append("${player.name} has been eliminated!\n")
             } else {
-                println("${player.name} has ${player.health} health remaining.")
+                attackSummary.append("${player.name} has ${player.health} health remaining.\n")
             }
         }
 
+        uiEvent.postValue(UIEvent.ShowDialog("Attack Summary", attackSummary.toString()))
     }
 
 }
