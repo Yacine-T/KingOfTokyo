@@ -29,6 +29,10 @@ open class Player(
         return true
     }
 
+    fun getCards(): MutableList<Card> {
+        return cards;
+    }
+
     fun removeCard(card: Card): Boolean {
         if (card !in cards) return false
         cards.remove(card)
