@@ -89,9 +89,9 @@ class DiceFragment : Fragment() {
             viewModel.nextTurn()
 
             // Navigate back to the main game screen (e.g., BoardGameFragment)
-            parentFragmentManager.beginTransaction()
+            /*parentFragmentManager.beginTransaction()
                 .replace(R.id.container, BoardGameFragment())
-                .commit()
+                .commit()*/
         }
     }
 }
