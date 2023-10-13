@@ -1,3 +1,5 @@
+//BoardGameFragment
+
 package com.example.kingoftokyo.Layout
 
 import android.app.AlertDialog
@@ -29,6 +31,7 @@ class BoardGameFragment : Fragment() {
     private val viewModel: GameViewModel by viewModels()
     private lateinit var rollDiceButton: Button
     private val dialogQueue: Queue<UIEvent.ShowDialog> = LinkedList()
+    private lateinit var rollDiceAgainButton: Button // Bouton pour lancer les dés à nouveau
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,12 +43,6 @@ class BoardGameFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val currentPlayer = viewModel.gameState.value?.currentTurnPlayer
-        if (currentPlayer == null) {
-            Log.e("BoardGameFragment", "Current player from ViewModel is null!")
-        } else {
-            Log.d("BoardGameFragment", "Current player from ViewModel is: ${currentPlayer.name}")
-        }
 
         viewModel.startGame()
 
@@ -55,7 +52,15 @@ class BoardGameFragment : Fragment() {
         rollDiceButton.visibility = View.GONE
 
         rollDiceButton.setOnClickListener {
+            Log.d("BoardGameFragment", "Current dice results: ${viewModel.currentDiceResults.value}")
             showDiceDecisionDialog(viewModel.currentDiceResults.value ?: emptyList())
+        }
+
+        // Bouton pour lancer les dés à nouveau
+        rollDiceAgainButton = view.findViewById(R.id.roll_dice_again_button)
+        rollDiceAgainButton.visibility = View.GONE
+        rollDiceAgainButton.setOnClickListener {
+            viewModel.rollDiceAgainForHumanPlayer()
         }
 
         val playerInTokyoAvatar: ImageView = view.findViewById(R.id.player_in_tokyo_avatar)
@@ -75,6 +80,12 @@ class BoardGameFragment : Fragment() {
 
         // Observe changes in the game state
         viewModel.gameState.observe(viewLifecycleOwner) { gameState ->
+            val currentPlayer = viewModel.gameState.value?.currentTurnPlayer
+            if (currentPlayer == null) {
+                Log.e("BoardGameFragment", "Current player from ViewModel is null!")
+            } else {
+                Log.d("BoardGameFragment", "Current player from ViewModel is: ${currentPlayer.name}")
+            }
 
             val players = gameState.players
             if (players.isNotEmpty()) {
@@ -143,6 +154,8 @@ class BoardGameFragment : Fragment() {
         val diceArray = diceResults.toTypedArray()
         val checkedItems = BooleanArray(diceResults.size) { false }
 
+        Log.d("BoardGameFragment", "Dice to show in dialog: $diceResults")
+
         AlertDialog.Builder(requireContext())
             .setTitle("Select dice to keep")
             .setMultiChoiceItems(diceArray.map { it.name }.toTypedArray(), checkedItems) { _, which, isChecked ->
@@ -154,6 +167,7 @@ class BoardGameFragment : Fragment() {
             }
             .setPositiveButton("OK") { _, _ ->
                 viewModel.rollDiceForCurrentPlayer(diceToKeep)
+                rollDiceAgainButton.visibility = View.VISIBLE // Afficher le bouton de lancer à nouveau
             }
             .show()
     }
@@ -188,6 +202,9 @@ class BoardGameFragment : Fragment() {
             .show()
     }
 
+
+
+
     private fun generateCard(card : Card) : View {
        val cardText = TextView(this.context);
         val layoutParameters = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -199,3 +216,4 @@ class BoardGameFragment : Fragment() {
     }
 
 }
+
