@@ -86,15 +86,7 @@ class GameViewModel : ViewModel() {
         val finalRolls = diceToKeep?.plus(newRolls) ?: newRolls
         val diceFaceCounts = finalRolls.toDiceFaceCount()
 
-        player.energy += DiceUtils.calculateEnergyFromDice(diceFaceCounts)
-        player.heal(DiceUtils.calculateHeartsFromDice(diceFaceCounts, player.isInTokyo))
-        player.addVictoryPoints(DiceUtils.calculateVictoryPointsFromDice(diceFaceCounts))
-        Log.d("GameViewModel", "${player.name} has ${player.energy} energy, ${player.victoryPoints} victory points, and ${player.health} health after dice roll.")
-
-        val damage = DiceUtils.calculatePawsFromDice(diceFaceCounts)
-        if (damage > 0) {
-            player.attack(players - player, damage, tokyo)
-        }
+        //Log.d("GameViewModel", "${player.name} has ${player.energy} energy, ${player.victoryPoints} victory points, and ${player.health} health after dice roll.")
 
         currentRollCount++
         currentDiceResults.value = finalRolls
@@ -105,6 +97,13 @@ class GameViewModel : ViewModel() {
             val diceDecision = player.decideDiceToKeep(finalRolls)
             rollDiceForPlayer(player, diceDecision)
         } else if (currentRollCount >= maxRolls || (player is IAPlayer && !player.shouldRollAgain(currentDiceResults.value ?: emptyList()))) {
+            player.energy += DiceUtils.calculateEnergyFromDice(diceFaceCounts)
+            player.heal(DiceUtils.calculateHeartsFromDice(diceFaceCounts, player.isInTokyo))
+            player.addVictoryPoints(DiceUtils.calculateVictoryPointsFromDice(diceFaceCounts))
+            val damage = DiceUtils.calculatePawsFromDice(diceFaceCounts)
+            if (damage > 0) {
+                player.attack(players - player, damage, tokyo)
+            }
             nextTurn()
         }
     }

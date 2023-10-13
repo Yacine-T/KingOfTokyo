@@ -90,7 +90,7 @@ class BoardGameFragment : Fragment() {
 
                     player_pseudo.text = players[i - 1].name;
                     player_life.text = "${players[i - 1].health} ❤️";
-                    player_energy.text = "${players[i - 1].energy} ⚡";
+                    player_energy.text = "${players[i - 1].energy} ⚡ / ${players[i - 1].victoryPoints} 👑";
 
                     player_cards.removeAllViews();
 

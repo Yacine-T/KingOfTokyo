@@ -29,6 +29,7 @@ object DiceUtils {
                 points += 3 + 3 * (entry.value - 3)
             }
         }
+        println("victory points are $points")
         return points
     }
 
