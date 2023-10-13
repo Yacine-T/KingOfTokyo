@@ -25,6 +25,16 @@ class MenuFragment : Fragment() {
             println("menu")
             findNavController().navigate(R.id.action_menuFragment_to_boardGameFragment)
         }
+
+        val creditsAndFragmentButton: Button = view.findViewById(R.id.creditAndLicenceButton)
+        creditsAndFragmentButton.setOnClickListener{
+            findNavController().navigate(R.id.action_menuFragment_to_creditAndLicenceFragment)
+        }
+
+        val helpFragmentButton: Button = view.findViewById(R.id.helpButton)
+        helpFragmentButton.setOnClickListener{
+            findNavController().navigate(R.id.action_menuFragment_to_helpFragment)
+        }
     }
 
 }
