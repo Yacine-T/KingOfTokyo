@@ -5,4 +5,8 @@
     <color name="green">#23CA23</color>
     <color name="red">#FF0000</color>
     <color name="blue">#0059FF</color>
+    <color name="background">#131200</color>
+    <color name="lighter_background">#343433</color>
+    <color name="primary">#941c2f</color>
+    <color name="secondary">#e9806e</color>
 </resources>
