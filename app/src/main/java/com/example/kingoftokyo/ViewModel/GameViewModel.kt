@@ -29,6 +29,7 @@ class GameViewModel : ViewModel() {
 
     val gameState = MutableLiveData<GameState>()
     val uiEvent = MutableLiveData<UIEvent>()
+    private var allowExtraRoll = false
 
     val currentDiceResults = MutableLiveData<List<DiceFace>>(emptyList())
 
@@ -45,20 +46,14 @@ class GameViewModel : ViewModel() {
         gameState.value = gameState.value?.copy(currentTurnPlayer = firstPlayer)
         uiEvent.postValue(UIEvent.ShowDialog("Game Start", "The game has started! First player: ${firstPlayer.name}."))
 
-        Log.d("GameViewModel", "Starting game with first player: ${firstPlayer.name}")
-
-        // Check if the current player is null
-        if (gameState.value?.currentTurnPlayer == null) {
-            Log.e("GameViewModel", "Current player is null after setting!")
-        } else {
-            Log.d("GameViewModel", "Current player is: ${gameState.value?.currentTurnPlayer?.name}")
-        }
 
         // Reset roll count for the first player's turn.
         currentRollCount = 0
 
         if (firstPlayer is IAPlayer) {
             handleIATurn(firstPlayer)
+        } else {
+            rollDiceForHumanPlayer()
         }
     }
 
@@ -70,6 +65,7 @@ class GameViewModel : ViewModel() {
     private fun List<DiceFace>.toDiceFaceCount(): Map<DiceFace, Int> {
         return this.groupingBy { it }.eachCount()
     }
+
 
     fun rollDiceForPlayer(player: Player, diceToKeep: List<DiceFace>? = null) {
         Log.d("GameViewModel", "Rolling dice for ${player.name}. Current roll count: $currentRollCount")
@@ -86,19 +82,23 @@ class GameViewModel : ViewModel() {
         val finalRolls = diceToKeep?.plus(newRolls) ?: newRolls
         val diceFaceCounts = finalRolls.toDiceFaceCount()
 
-        player.energy += DiceUtils.calculateEnergyFromDice(diceFaceCounts)
-        player.heal(DiceUtils.calculateHeartsFromDice(diceFaceCounts, player.isInTokyo))
-        player.addVictoryPoints(DiceUtils.calculateVictoryPointsFromDice(diceFaceCounts))
-        Log.d("GameViewModel", "${player.name} has ${player.energy} energy, ${player.victoryPoints} victory points, and ${player.health} health after dice roll.")
-
         val damage = DiceUtils.calculatePawsFromDice(diceFaceCounts)
-        if (damage > 0) {
-            player.attack(players - player, damage, tokyo)
-        }
 
         currentRollCount++
         currentDiceResults.value = finalRolls
         refreshGameState()
+
+        if (currentRollCount >= maxRolls) {
+            player.energy += DiceUtils.calculateEnergyFromDice(diceFaceCounts)
+            player.heal(DiceUtils.calculateHeartsFromDice(diceFaceCounts, player.isInTokyo))
+            player.addVictoryPoints(DiceUtils.calculateVictoryPointsFromDice(diceFaceCounts))
+            if (damage > 0) {
+                player.attack(players - player, damage, tokyo)
+            }
+        }
+        Log.d("GameViewModel", "${player.name} has ${player.energy} energy, ${player.victoryPoints} victory points, and ${player.health} health after dice roll.")
+
+
 
         // Si c'est un IAPlayer, prenons des décisions pour lui
         if (player is IAPlayer && currentRollCount < maxRolls) {
@@ -111,7 +111,6 @@ class GameViewModel : ViewModel() {
 
 
     fun rollDiceForCurrentPlayer(diceToKeep: List<DiceFace>? = null) {
-        // Log at the start of the dice roll
         Log.d("GameViewModel", "Rolling dice with selected dice: $diceToKeep")
 
         val currentPlayer = gameState.value?.currentTurnPlayer ?: return
@@ -148,6 +147,28 @@ class GameViewModel : ViewModel() {
 
         val playersWith20Points = players.filter { it.victoryPoints >= 20 }
         return playersWith20Points.maxByOrNull { it.victoryPoints }
+    }
+
+//    private fun rollDiceForHumanPlayer() {
+//        val dice = Dice()
+//        val initialRolls = List(6) { dice.roll() }
+//        currentDiceResults.value = initialRolls
+//    }
+
+    fun rollDiceForHumanPlayer() {
+        // Permettre le lancer de dés supplémentaire pour les joueurs humains
+        allowExtraRoll = true
+        val dice = Dice()
+        val initialRolls = List(6) { dice.roll() }
+        currentDiceResults.value = initialRolls
+    }
+
+    fun rollDiceAgainForHumanPlayer() {
+        if (allowExtraRoll) {
+            // Réinitialiser le nombre de lancers pour le joueur humain
+            currentRollCount = 0
+            rollDiceForHumanPlayer()
+        }
     }
 
     fun handleIATurn(iaPlayer: IAPlayer) {
@@ -222,7 +243,6 @@ class GameViewModel : ViewModel() {
     fun nextTurn() {
         // Check if the game has already ended
         if (gameState.value?.winner != null) {
-            Log.d("GameViewModel", "Game has already ended. Not moving to the next turn.")
             uiEvent.postValue(UIEvent.ShowDialog("Game Over", "The game has already ended! Winner: ${gameState.value?.winner?.name}"))
             return
         }
@@ -239,6 +259,11 @@ class GameViewModel : ViewModel() {
             gameState.value = gameState.value?.copy(currentTurnPlayer = nextPlayer)
 
             uiEvent.postValue(UIEvent.ShowDialog("Changement de tour", "C'est le tour de ${nextPlayer.name}.", onDismiss = {
+                Log.d("GameViewModel", "Setting current player to: ${nextPlayer.name}")
+
+                if (nextPlayer is Player && nextPlayer.isHuman) {
+                    rollDiceForHumanPlayer()
+                }
 
                 if (nextPlayer is IAPlayer) {
                     handleIATurn(nextPlayer)
@@ -249,7 +274,6 @@ class GameViewModel : ViewModel() {
         // Reset roll count for the next player's turn.
         currentRollCount = 0
     }
-
 
 
     fun endGame(winner: Player) {
