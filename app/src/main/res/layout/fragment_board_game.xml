@@ -5,6 +5,7 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/tokyo_pixel_art_blurred"
     tools:context=".Layout.BoardGameFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -16,6 +17,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:alpha="@dimen/material_emphasis_medium"
+        android:background="@color/lighter_background"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -31,6 +34,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:alpha="@dimen/material_emphasis_medium"
+        android:background="@color/lighter_background"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/player_1_info"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,6 +49,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:alpha="@dimen/material_emphasis_medium"
+        android:background="@color/lighter_background"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/player_2_info"
         app:layout_constraintStart_toStartOf="parent"
@@ -56,6 +63,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:alpha="@dimen/material_emphasis_medium"
+        android:background="@color/lighter_background"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/player_3_info"
         app:layout_constraintEnd_toEndOf="parent"
@@ -63,6 +72,7 @@
 
     <Button
         android:id="@+id/roll_dice_button"
+        style="@style/Widget.Material3.Button.IconButton.Filled"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Roll Dice"
@@ -101,6 +111,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Player in tokyo"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toStartOf="@+id/player_3_cards"
         app:layout_constraintStart_toEndOf="@+id/player_2_cards"
         app:layout_constraintTop_toBottomOf="@+id/player_in_tokyo_avatar" />
@@ -122,21 +133,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Pseudo" />
+            android:text="Pseudo"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/player_4_life"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Life" />
+            android:text="Life"
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/player_4_energy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Energy" />
+            android:text="Energy"
+            android:textColor="@color/white" />
     </LinearLayout>
 
     <LinearLayout
@@ -156,21 +171,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TextView" />
+            android:text="TextView"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/player_2_life"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TextView" />
+            android:text="TextView"
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/player_2_energy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TextView" />
+            android:text="TextView"
+            android:textColor="@color/white" />
     </LinearLayout>
 
     <LinearLayout
@@ -189,21 +208,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TextView" />
+            android:text="TextView"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/player_3_life"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TextView" />
+            android:text="TextView"
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/player_3_energy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TextView" />
+            android:text="TextView"
+            android:textColor="@color/white" />
     </LinearLayout>
 
     <LinearLayout
@@ -223,21 +246,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TextView" />
+            android:text="TextView"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/player_1_life"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TextView" />
+            android:text="TextView"
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/player_1_energy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TextView" />
+            android:text="TextView"
+            android:textColor="@color/white" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

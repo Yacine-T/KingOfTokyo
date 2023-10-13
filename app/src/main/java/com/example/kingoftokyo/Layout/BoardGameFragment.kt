@@ -11,9 +11,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.example.kingoftokyo.Entity.Card
 import com.example.kingoftokyo.Entity.DiceFace
 import com.example.kingoftokyo.Entity.IAPlayer
 import com.example.kingoftokyo.Entity.Player
@@ -61,23 +63,6 @@ class BoardGameFragment : Fragment() {
             viewModel.rollDiceAgainForHumanPlayer()
         }
 
-
-        val player1Pseudo: TextView = view.findViewById(R.id.player_1_pseudo)
-        val player1Life: TextView = view.findViewById(R.id.player_1_life)
-        val player1Energy: TextView = view.findViewById(R.id.player_1_energy)
-
-        val player2Pseudo: TextView = view.findViewById(R.id.player_2_pseudo)
-        val player2Life: TextView = view.findViewById(R.id.player_2_life)
-        val player2Energy: TextView = view.findViewById(R.id.player_2_energy)
-
-        val player3Pseudo: TextView = view.findViewById(R.id.player_3_pseudo)
-        val player3Life: TextView = view.findViewById(R.id.player_3_life)
-        val player3Energy: TextView = view.findViewById(R.id.player_3_energy)
-
-        val player4Pseudo: TextView = view.findViewById(R.id.player_4_pseudo)
-        val player4Life: TextView = view.findViewById(R.id.player_4_life)
-        val player4Energy: TextView = view.findViewById(R.id.player_4_energy)
-
         val playerInTokyoAvatar: ImageView = view.findViewById(R.id.player_in_tokyo_avatar)
 
 
@@ -104,21 +89,26 @@ class BoardGameFragment : Fragment() {
 
             val players = gameState.players
             if (players.isNotEmpty()) {
-                player1Pseudo.text = players[0].name
-                player1Life.text = players[0].health.toString()
-                player1Energy.text = players[0].energy.toString()
+                for(i in 1..4) {
+                    val player_pseudo_id = resources.getIdentifier("player_${i}_pseudo", "id", requireContext().packageName);
+                    val player_life_id = resources.getIdentifier("player_${i}_life", "id", requireContext().packageName)
+                    val player_energy_id = resources.getIdentifier("player_${i}_energy", "id", requireContext().packageName)
+                    val player_cards_id = resources.getIdentifier("player_${i}_cards", "id", requireContext().packageName);
+                    val player_pseudo = view.findViewById<TextView>(player_pseudo_id);
+                    val player_life = view.findViewById<TextView>(player_life_id);
+                    val player_energy = view.findViewById<TextView>(player_energy_id);
+                    val player_cards = view.findViewById<LinearLayout>(player_cards_id)
 
-                player2Pseudo.text = players[1].name
-                player2Life.text = players[1].health.toString()
-                player2Energy.text = players[1].energy.toString()
+                    player_pseudo.text = players[i - 1].name;
+                    player_life.text = "${players[i - 1].health} ❤️";
+                    player_energy.text = "${players[i - 1].energy} ⚡";
 
-                player3Pseudo.text = players[2].name
-                player3Life.text = players[2].health.toString()
-                player3Energy.text = players[2].energy.toString()
+                    player_cards.removeAllViews();
 
-                player4Pseudo.text = players[3].name
-                player4Life.text = players[3].health.toString()
-                player4Energy.text = players[3].energy.toString()
+                    for(card in players[i - 1].getCards()) {
+                        player_cards.addView(generateCard(card));
+                    }
+                }
 
                 // Highlight the current player
                 val currentPlayer = gameState.currentTurnPlayer
@@ -127,11 +117,12 @@ class BoardGameFragment : Fragment() {
                 } else {
                     rollDiceButton.visibility = View.GONE
                 }
+                val secondaryColor = resources.getColor(R.color.secondary)
 
-                player1Pseudo.setBackgroundColor(if (currentPlayer == players[0]) Color.YELLOW else Color.TRANSPARENT)
-                player2Pseudo.setBackgroundColor(if (currentPlayer == players[1]) Color.YELLOW else Color.TRANSPARENT)
-                player3Pseudo.setBackgroundColor(if (currentPlayer == players[2]) Color.YELLOW else Color.TRANSPARENT)
-                player4Pseudo.setBackgroundColor(if (currentPlayer == players[3]) Color.YELLOW else Color.TRANSPARENT)
+                for(i in 1..4) {
+                    val playerPseudo = view.findViewById<TextView>(resources.getIdentifier("player_${i}_pseudo", "id", requireContext().packageName));
+                    playerPseudo.setBackgroundColor(if(currentPlayer == players[i - 1]) secondaryColor else Color.TRANSPARENT);
+                }
 
             }
 
@@ -209,6 +200,19 @@ class BoardGameFragment : Fragment() {
                 onDismiss?.invoke()
             }
             .show()
+    }
+
+
+
+
+    private fun generateCard(card : Card) : View {
+       val cardText = TextView(this.context);
+        val layoutParameters = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        cardText.text = "🃏 ${card.name}";
+        cardText.layoutParams = layoutParameters;
+        cardText.setTextColor(Color.WHITE);
+        cardText.textSize = 16.0F
+        return cardText;
     }
 
 }

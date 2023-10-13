@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.navigation.fragment.findNavController
 import com.example.kingoftokyo.R
 import androidx.navigation.fragment.findNavController
 
@@ -19,13 +20,21 @@ class MenuFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val playButton: Button = view.findViewById(R.id.playButton)
-
+        val playButton : Button = view.findViewById(R.id.playButton)
         playButton.setOnClickListener {
             println("menu")
             findNavController().navigate(R.id.action_menuFragment_to_boardGameFragment)
         }
+
+        val creditsAndFragmentButton: Button = view.findViewById(R.id.creditAndLicenceButton)
+        creditsAndFragmentButton.setOnClickListener{
+            findNavController().navigate(R.id.action_menuFragment_to_creditAndLicenceFragment)
+        }
+
+        val helpFragmentButton: Button = view.findViewById(R.id.helpButton)
+        helpFragmentButton.setOnClickListener{
+            findNavController().navigate(R.id.action_menuFragment_to_helpFragment)
+        }
     }
+
 }

@@ -2,17 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/material_dynamic_neutral20"
     android:padding="16dp">
 
     <ListView
         android:id="@+id/diceResultsListView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_above="@+id/rollDiceButton"
-        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="11dp"
         android:choiceMode="multipleChoice"
         android:divider="@android:color/darker_gray"
-        android:dividerHeight="0.5dp" />
+        android:dividerHeight="0.5dp"
+        android:layout_height="match_parent" />
 
     <Button
         android:id="@+id/rollDiceButton"
@@ -20,8 +21,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
         android:text="Roll Dice"
-        android:layout_marginTop="16dp" />
+        android:textColorHighlight="#00BCD4"
+        android:textColorLink="#00BCD4" />
 
     <Button
         android:id="@+id/finalizeTurnButton"
@@ -29,7 +32,19 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/rollDiceButton"
         android:layout_centerHorizontal="true"
-        android:text="Finalize Turn"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:text="Finalize Turn" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="16dp"
+        android:fontFamily="sans-serif-black"
+        android:text="@string/dicesTitle"
+        android:textAlignment="center"
+        android:textColor="@color/material_dynamic_neutral99"
+        android:textSize="34sp" />
 
 </RelativeLayout>

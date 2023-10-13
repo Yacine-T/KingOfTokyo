@@ -1,14 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout4"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Layout.ShopFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+    <ImageView
+        android:id="@+id/card_from_shop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/img_action_card"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.451"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buy_card_from_shop_btn"
+        android:layout_width="200dp"
+        android:layout_height="63dp"
+        android:backgroundTint="#E64F45"
+        android:text="Acheter"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:cornerRadius="40dp"
+        app:layout_constraintBottom_toTopOf="@+id/energie_point_available_text"
+        app:layout_constraintEnd_toStartOf="@+id/second_skip_btn"
+        app:layout_constraintStart_toEndOf="@+id/second_skip_btn2"
+        app:layout_constraintTop_toBottomOf="@+id/card_from_shop" />
+
+    <TextView
+        android:id="@+id/energie_point_available_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="14 &#9889; disponible"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/second_skip_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:background="#00FFFFFF"
+        android:drawableLeft="@drawable/ic_right_arrow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card_from_shop"
+        app:layout_constraintVertical_bias="0.081" />
+
+    <Button
+        android:id="@+id/second_skip_btn2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="8dp"
+        android:background="#00FFFFFF"
+        android:drawableLeft="@drawable/ic_left_arrow"
+        android:textColor="#000000"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card_from_shop" />
+
+    <TextView
+        android:id="@+id/energie_point_of_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="12"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/card_from_shop"
+        app:layout_constraintEnd_toEndOf="@+id/card_from_shop"
+        app:layout_constraintHorizontal_bias="0.005"
+        app:layout_constraintStart_toStartOf="@+id/card_from_shop"
+        app:layout_constraintTop_toTopOf="@+id/card_from_shop"
+        app:layout_constraintVertical_bias="0.024" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="@string/hello_blank_fragment" />
+        android:id="@+id/description_text_view"
+        android:layout_width="311dp"
+        android:layout_height="55dp"
+        android:text="Gagner 1 &#11088; de victoire à votre tour si vous n'avez pas infligé de blessure."
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/card_from_shop"
+        app:layout_constraintEnd_toEndOf="@+id/card_from_shop"
+        app:layout_constraintHorizontal_bias="0.536"
+        app:layout_constraintStart_toStartOf="@+id/card_from_shop"
+        app:layout_constraintTop_toTopOf="@+id/card_from_shop"
+        app:layout_constraintVertical_bias="0.908" />
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

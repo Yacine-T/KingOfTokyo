@@ -12,7 +12,7 @@
     <string name="play">Play</string>
     <string name="help">Help</string>
     <string name="credit">Credits and Licence</string>
-    
+
     <!-- Carte Action -->
     <string name="image_desc_card_fighter">Card of a fighter</string>
     <string name="image_desc_board_game">Image of the boardgame</string>
@@ -22,5 +22,8 @@
     <string name="zero">0</string>
 
     <string name="hello_blank_fragment">Texte de votre fragment</string>
+    <string name="dicesTitle">Choose your dices</string>
+    <string name="cr_dit">\nCrédit : \n\nGrégory LAURENT \nYacine TAZDAIT \nPape IBRAHIMA DIAWARA \nMacence DE TORQUA\n\nLicence : \n\nProject made by EPITA student</string>
+    <string name="clique">\n\n\n\nPlease, clique here to learn the rules and how to play.</string>
 
 </resources>

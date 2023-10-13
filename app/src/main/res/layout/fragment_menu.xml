@@ -5,7 +5,7 @@
     android:id="@+id/menu_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/main_background"
+    android:background="@drawable/bg_main"
     tools:context=".Layout.MenuFragment">
 
 
@@ -17,7 +17,9 @@
         android:layout_marginTop="360dp"
         android:layout_marginEnd="130dp"
         android:layout_marginBottom="1dp"
+        android:fontFamily="@font/bangers"
         android:text="@string/play"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/helpButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,7 +33,9 @@
         android:layout_marginTop="1dp"
         android:layout_marginEnd="130dp"
         android:layout_marginBottom="1dp"
+        android:fontFamily="@font/bangers"
         android:text="@string/help"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/creditAndLicenceButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +48,9 @@
         android:layout_marginStart="129dp"
         android:layout_marginTop="1dp"
         android:layout_marginEnd="130dp"
+        android:fontFamily="@font/bangers"
         android:text="@string/credit"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/helpButton" />
