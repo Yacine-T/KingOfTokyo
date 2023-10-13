@@ -1,6 +1,7 @@
 package com.example.kingoftokyo.Layout
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +31,23 @@ class DiceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val currentPlayer = viewModel.gameState.value?.currentTurnPlayer
+        if (currentPlayer == null) {
+            Log.e("DiceFragment", "Current player from ViewModel is null!")
+        } else {
+            Log.d("DiceFragment", "Current player from ViewModel is: ${currentPlayer.name}")
+        }
+
+        viewModel.currentDiceResults.observe(viewLifecycleOwner, { diceResults ->
+            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_multiple_choice, diceResults)
+            diceResultsListView.adapter = adapter
+            Log.d("DiceFragment", "LiveData dice results updated: $diceResults")
+        })
+
+        // Log when the fragment's view is created
+        Log.d("DiceFragment", "View created")
+
+
         diceResultsListView = view.findViewById(R.id.diceResultsListView)
         rollDiceButton = view.findViewById(R.id.rollDiceButton)
         finalizeTurnButton = view.findViewById(R.id.finalizeTurnButton)
@@ -42,6 +60,9 @@ class DiceFragment : Fragment() {
 
         // Set up the roll dice button
         rollDiceButton.setOnClickListener {
+            // Log when the rollDiceButton is clicked
+            Log.d("DiceFragment", "Roll Dice button clicked")
+
             // Roll the dice for the current player, keeping the selected dice
             val selectedDice = mutableListOf<DiceFace>()
             for (i in 0 until diceResultsListView.checkedItemPositions.size()) {
@@ -54,12 +75,16 @@ class DiceFragment : Fragment() {
 
             // Update the dice results list view with the new dice results
             val newDiceResults = viewModel.currentDiceResults.value ?: emptyList()
+            Log.d("DiceFragment", "New dice results: $newDiceResults")
             val newAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_multiple_choice, newDiceResults)
             diceResultsListView.adapter = newAdapter
         }
 
         // Set up the finalize turn button
         finalizeTurnButton.setOnClickListener {
+            // Log when the finalizeTurnButton is clicked
+            Log.d("DiceFragment", "Finalize Turn button clicked")
+
             // Finalize the turn for the current player
             viewModel.nextTurn()
 

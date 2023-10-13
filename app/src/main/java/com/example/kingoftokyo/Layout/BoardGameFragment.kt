@@ -3,16 +3,16 @@ package com.example.kingoftokyo.Layout
 import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
+import com.example.kingoftokyo.Entity.DiceFace
 import com.example.kingoftokyo.Entity.IAPlayer
 import com.example.kingoftokyo.Entity.Player
 import com.example.kingoftokyo.Entity.UIEvent
@@ -38,17 +38,22 @@ class BoardGameFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val currentPlayer = viewModel.gameState.value?.currentTurnPlayer
+        if (currentPlayer == null) {
+            Log.e("BoardGameFragment", "Current player from ViewModel is null!")
+        } else {
+            Log.d("BoardGameFragment", "Current player from ViewModel is: ${currentPlayer.name}")
+        }
+
         viewModel.startGame()
 
+
         // Toast feedback for game start
-        Toast.makeText(context, "The game has started!", Toast.LENGTH_SHORT).show()
         rollDiceButton = view.findViewById(R.id.roll_dice_button)
         rollDiceButton.visibility = View.GONE
 
         rollDiceButton.setOnClickListener {
-//            viewModel.rollDiceForCurrentPlayer()
-            findNavController().navigate(R.id.action_boardGameFragment_to_dicesFragment)
-
+            showDiceDecisionDialog(viewModel.currentDiceResults.value ?: emptyList())
         }
 
         val player1Pseudo: TextView = view.findViewById(R.id.player_1_pseudo)
@@ -116,12 +121,6 @@ class BoardGameFragment : Fragment() {
                 player3Pseudo.setBackgroundColor(if (currentPlayer == players[2]) Color.YELLOW else Color.TRANSPARENT)
                 player4Pseudo.setBackgroundColor(if (currentPlayer == players[3]) Color.YELLOW else Color.TRANSPARENT)
 
-                if (currentPlayer is Player && currentPlayer.isHuman) {
-                    rollDiceButton.visibility = View.VISIBLE
-                } else {
-                    rollDiceButton.visibility = View.GONE
-                }
-
             }
 
             // Check if there's a player in Tokyo and update the UI
@@ -146,6 +145,27 @@ class BoardGameFragment : Fragment() {
         }
 
     }
+
+    private fun showDiceDecisionDialog(diceResults: List<DiceFace>) {
+        val diceToKeep = mutableListOf<DiceFace>()
+        val diceArray = diceResults.toTypedArray()
+        val checkedItems = BooleanArray(diceResults.size) { false }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Select dice to keep")
+            .setMultiChoiceItems(diceArray.map { it.name }.toTypedArray(), checkedItems) { _, which, isChecked ->
+                if (isChecked) {
+                    diceToKeep.add(diceArray[which])
+                } else {
+                    diceToKeep.remove(diceArray[which])
+                }
+            }
+            .setPositiveButton("OK") { _, _ ->
+                viewModel.rollDiceForCurrentPlayer(diceToKeep)
+            }
+            .show()
+    }
+
 
     private fun showLeaveTokyoDialog(player: Player) {
         AlertDialog.Builder(requireContext())
