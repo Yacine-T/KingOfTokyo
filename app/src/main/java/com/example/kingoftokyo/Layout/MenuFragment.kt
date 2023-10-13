@@ -22,6 +22,7 @@ class MenuFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val playButton : Button = view.findViewById(R.id.playButton)
         playButton.setOnClickListener {
+            println("menu")
             findNavController().navigate(R.id.action_menuFragment_to_boardGameFragment)
         }
     }

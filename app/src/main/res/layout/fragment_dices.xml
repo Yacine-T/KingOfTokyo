@@ -1,14 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/dices"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Layout.DicesFragment">
+    android:padding="16dp">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ListView
+        android:id="@+id/diceResultsListView"
         android:layout_width="match_parent"
+        android:layout_above="@+id/rollDiceButton"
+        android:layout_centerHorizontal="true"
+        android:choiceMode="multipleChoice"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="0.5dp"
         android:layout_height="match_parent" />
 
-</FrameLayout>
+    <Button
+        android:id="@+id/rollDiceButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="Roll Dice"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/finalizeTurnButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rollDiceButton"
+        android:layout_centerHorizontal="true"
+        android:text="Finalize Turn"
+        android:layout_marginTop="16dp" />
+
+</RelativeLayout>

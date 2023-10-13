@@ -48,7 +48,7 @@
     </fragment>
     <fragment
         android:id="@+id/dicesFragment"
-        android:name="com.example.kingoftokyo.Layout.DicesFragment"
+        android:name="com.example.kingoftokyo.Layout.DiceFragment"
         android:label="fragment_dices"
         tools:layout="@layout/fragment_dices" >
         <action

@@ -10,7 +10,9 @@ open class Player(
     var isHuman: Boolean = true,
     var isInTokyo: Boolean = false,
     private val cards: MutableList<Card> = mutableListOf(),
-    val imageResId: Int = R.drawable.default_image
+    val imageResId: Int = R.drawable.default_image,
+    var hasBeenAttacked: Boolean = false
+
 ) {
     val isAlive: Boolean get() = health > 0
 
@@ -73,6 +75,7 @@ open class Player(
             for (opponent in opponents) {
                 if (!opponent.isInTokyo) {
                     opponent.takeDamage(damage)
+                    opponent.hasBeenAttacked = true
                     if (!opponent.isAlive) {
                         eliminatedPlayers.add(opponent)
                     }
@@ -80,11 +83,13 @@ open class Player(
             }
         } else {
             tokyo.currentPlayerInTokyo?.takeDamage(damage)
+            tokyo.currentPlayerInTokyo?.hasBeenAttacked = true
             if (tokyo.currentPlayerInTokyo?.isAlive == false || tokyo.currentPlayerInTokyo?.decisionToLeaveTokyo() == true) {
                 tokyo.leaveTokyo(tokyo.currentPlayerInTokyo!!)
                 enterTokyo(tokyo)
             }
         }
+
 
         return eliminatedPlayers
     }
@@ -115,5 +120,29 @@ class IAPlayer(name: String) : Player(name, imageResId = R.drawable.ia_image, is
 
         return affordableCards.random()
     }
+
+
+    fun decideDiceToKeep(diceResults: List<DiceFace>): List<DiceFace> {
+        //  l'IA a moins de 5 points de vie, garder les cœurs
+        if (this.health < 5) {
+            return diceResults.filter { it == DiceFace.HEART }
+        }
+
+        // si IA beaucoup d'énergie,  garder les griffes pour attaquer
+        if (this.energy > 5) {
+            return diceResults.filter { it == DiceFace.PAW }
+        }
+
+        // Sinon,  garder les dés qui ont le plus haut nombre
+        val counts = diceResults.groupingBy { it }.eachCount()
+        val maxCount = counts.maxByOrNull { it.value }?.key
+        return diceResults.filter { it == maxCount }
+    }
+
+    fun shouldRollAgain(diceResults: List<DiceFace>): Boolean {
+        val counts = diceResults.groupingBy { it }.eachCount()
+        return counts.values.none { it >= 3 }
+    }
+
 
 }
